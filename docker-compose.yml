@@ -1,0 +1,39 @@
+version: '3'
+services:
+  client:
+    container_name: client-container
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000"
+    volumes:
+      - ./client:/client
+  microservice1:
+    container_name: ms1-container
+    build:
+      context: ./microservices/microservice1
+      dockerfile: Dockerfile
+    ports:
+      - "3001"
+    volumes:
+      - ./microservices/microservice1:/microservice1
+  microservice2:
+    container_name: ms2-container
+    build:
+      context: ./microservices/microservice2
+      dockerfile: Dockerfile
+    ports:
+      - "3002"
+    volumes:
+      - ./microservices/microservice2:/microservice2
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - microservice1
+      - microservice2
+      - client
